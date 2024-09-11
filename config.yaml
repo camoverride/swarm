@@ -2,8 +2,8 @@
 alpha: 0.1
 
 # These should be roughly square for good behavior.
-display_width: 1200
-display_height: 1200 #1920
+display_width: 1024
+display_height: 1280
 
 # How many faces should be "remembered" before a repeat is allowed.
 face_memory: 10
