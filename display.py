@@ -182,10 +182,11 @@ if __name__ == "__main__":
         # Set this to False. If a face is looking forward, it will be set to True later.
         looking_forward = False
 
+        # Get a picture from the webcam.
         frame = picam2.capture_array()
 
         # Face recognition:
-        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
 
         # Convert the image from BGR (OpenCV format) to RGB (face_recognition format)
         rgb_small_frame = np.ascontiguousarray(frame[:, :, ::-1])
@@ -194,16 +195,18 @@ if __name__ == "__main__":
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
+        # Iterate over the encodings.
         for face_encoding in face_encodings:
             # Check if this face has already been seen
             matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
 
             # If no match, it means this is a new face
-            if not any(matches):
-                print("New face detected!")
-
+            if any(matches):
+                print("Face seen before!")
+            
+            else:
                 # This image will be used for averaging
-                image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
+                # image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
 
                 # Process the image.
                 image.flags.writeable = False
@@ -222,6 +225,7 @@ if __name__ == "__main__":
 
                 # If there are landmarks (face detected), continue
                 if results.multi_face_landmarks:
+                    print("Landmarks detected")
                     for face_landmarks in results.multi_face_landmarks:
                         for idx, lm in enumerate(face_landmarks.landmark):
                             if idx == 33 or idx == 263 or idx ==1 or idx == 61 or idx == 291 or idx==199:
@@ -269,6 +273,9 @@ if __name__ == "__main__":
                             looking_forward=False
                         else: # Looking Forward
                             looking_forward=True
+
+                else:
+                    print("No landmarks detected")
             
                 # If the face is looking forward (passport style), continue.
                 if looking_forward:
@@ -283,6 +290,7 @@ if __name__ == "__main__":
                                                         target_all_landmarks=target_all_landmarks)
 
                         if new_morph is not None:
+                            print("Morphed the face")
                             # Alpha blend the image with the previous image.
                             beta = 1.0 - config["alpha"]  # Weight for image2
 
@@ -294,22 +302,15 @@ if __name__ == "__main__":
 
                             # Add the new face encoding to the list of known faces
                             known_face_encodings.append(face_encoding)
-
-                            print ("blended the faces!")
                         else:
-                            print("did not blend faces")
+                            print("Did not morph/blend the face")
                     except:
-                        print("Error morphing face")
-
-                    else:
-                        pass
+                        print("ERROR morphing face")
                 
                 else:
-                    pass
+                    print("Face NOT looking forward")
 
-            else:
-                print("face already seen")
-                pass
+        print("---------------")
 
         cv2.imshow("Running Average", CURRENT_AVERAGE)
         # Exit if 'q' is pressed.
