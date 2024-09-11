@@ -10,6 +10,10 @@
 - `pip install setuptools` (for `face_recognition` models)
 - `pip install -r requirements.txt`
 
+Hide the cursor:
+
+- `sudo apt-get install unclutter`
+
 
 ## Run in Production
 

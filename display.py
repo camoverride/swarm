@@ -168,15 +168,16 @@ if __name__ == "__main__":
     CURRENT_AVERAGE = morphed_face
 
     # Start video capture.
-    cap = cv2.VideoCapture(0)
+    from picamera2 import Picamera2
+    picam2 = Picamera2()
+    picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888", "size": (640, 480)}))
+    picam2.start()
 
     while True:
         # Set this to False. If a face is looking forward, it will be set to True later.
         looking_forward = False
 
-        ret, frame = cap.read()
-        if not ret:
-            break
+        frame = picam2.capture_array()
 
         # Face recognition:
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
