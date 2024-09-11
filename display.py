@@ -272,29 +272,32 @@ if __name__ == "__main__":
             
                 # If the face is looking forward (passport style), continue.
                 if looking_forward:
+                    print("face is looking forward!")
+                    try:
+                        # Generate the morph.
+                        new_morph = processing_pipeline(image=image,
+                                                        total_face_width=total_face_width,
+                                                        total_face_height=total_face_height,
+                                                        margin=2.5,
+                                                        target_triangulation_indexes=target_triangulation_indexes,
+                                                        target_all_landmarks=target_all_landmarks)
 
-                    # Generate the morph.
-                    new_morph = processing_pipeline(image=image,
-                                                    total_face_width=total_face_width,
-                                                    total_face_height=total_face_height,
-                                                    margin=2.5,
-                                                    target_triangulation_indexes=target_triangulation_indexes,
-                                                    target_all_landmarks=target_all_landmarks)
+                        if new_morph is not None:
+                            # Alpha blend the image with the previous image.
+                            beta = 1.0 - config["alpha"]  # Weight for image2
 
-                    if new_morph is not None:
-                        # Alpha blend the image with the previous image.
-                        beta = 1.0 - config["alpha"]  # Weight for image2
+                            # Perform alpha blending
+                            blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
 
-                        # Perform alpha blending
-                        blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
+                            # Set the current face to the blended face.
+                            CURRENT_AVERAGE = blended_image
 
-                        # Set the current face to the blended face.
-                        CURRENT_AVERAGE = blended_image
+                            # Add the new face encoding to the list of known faces
+                            known_face_encodings.append(face_encoding)
 
-                        # Add the new face encoding to the list of known faces
-                        known_face_encodings.append(face_encoding)
-
-                        print ("blended the faces!")
+                            print ("blended the faces!")
+                    except:
+                        print("Error morphing face")
 
                     else:
                         pass
