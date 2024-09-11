@@ -296,6 +296,8 @@ if __name__ == "__main__":
                             known_face_encodings.append(face_encoding)
 
                             print ("blended the faces!")
+                        else:
+                            print("did not blend faces")
                     except:
                         print("Error morphing face")
 
