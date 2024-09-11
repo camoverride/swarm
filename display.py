@@ -197,133 +197,137 @@ if __name__ == "__main__":
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
-        # Iterate over the encodings.
-        for i, face_encoding in enumerate(face_encodings):
-            print(f"{i} faces detected!")
-            # Check if this face has already been seen
-            matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+        if len(face_encodings) > 0:
+            # Iterate over the encodings.
+            for i, face_encoding in enumerate(face_encodings):
+                print(f"{len(face_encodings)} faces detected!")
+                # Check if this face has already been seen
+                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
 
-            # If no match, it means this is a new face
-            if any(matches):
-                print("  Face seen before!")
-            
-            else:
-                print(f"  Analyzing Face {i}")
-                # This image will be used for averaging
-                image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
-
-                # Process the image.
-                image.flags.writeable = False
-                results = face_mesh.process(image)
-                image.flags.writeable = True
-
-                # TODO: check if this is redundant
-                image = cv2.cvtColor(image,cv2.COLOR_RGB2BGR)
-
-                # Get image size information.
-                img_h , img_w, img_c = image.shape
-
-                # Collect the 2D and 3D landmarks.
-                face_2d = []
-                face_3d = []
-
-                # If there are landmarks (face detected), continue
-                if results.multi_face_landmarks:
-                    print("    Landmarks detected")
-                    for face_landmarks in results.multi_face_landmarks:
-                        for idx, lm in enumerate(face_landmarks.landmark):
-                            if idx == 33 or idx == 263 or idx ==1 or idx == 61 or idx == 291 or idx==199:
-                                if idx ==1:
-                                    nose_2d = (lm.x * img_w,lm.y * img_h)
-                                    nose_3d = (lm.x * img_w,lm.y * img_h,lm.z * 3000)
-                                x,y = int(lm.x * img_w),int(lm.y * img_h)
-
-                                face_2d.append([x,y])
-                                face_3d.append(([x,y,lm.z]))
-
-
-                        # Get 2D coordinates
-                        face_2d = np.array(face_2d, dtype=np.float64)
-
-                        # Get 3D coordinates
-                        face_3d = np.array(face_3d,dtype=np.float64)
-
-                        # Calculate the orientation of the face.
-                        focal_length = 1 * img_w
-                        cam_matrix = np.array([[focal_length,0,img_h/2],
-                                            [0,focal_length,img_w/2],
-                                            [0,0,1]])
-                        distortion_matrix = np.zeros((4,1),dtype=np.float64)
-
-                        success,rotation_vec,translation_vec = cv2.solvePnP(face_3d, face_2d, cam_matrix, distortion_matrix)
-
-                        # Get the rotational vector of the face.
-                        rmat, jac = cv2.Rodrigues(rotation_vec)
-
-                        angles, mtxR, mtxQ ,Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
-
-                        x = angles[0] * 360
-                        y = angles[1] * 360
-                        z = angles[2] * 360
-
-                        # Check which way the face is oriented.
-                        if y < -3: # Looking Left
-                            looking_forward=False
-                        elif y > 3: # Looking Right
-                            looking_forward=False
-                        elif x < -3: # Looking Down
-                            looking_forward=False
-                        elif x > 7: # Looking Up
-                            looking_forward=False
-                        else: # Looking Forward
-                            looking_forward=True
-
-                else:
-                    print("    No landmarks detected")
-            
-                # If the face is looking forward (passport style), continue.
-                if looking_forward:
-                    print("    Face is looking forward!")
-                    try:
-                        # Generate the morph.
-                        new_morph = processing_pipeline(image=image,
-                                                        total_face_width=total_face_width,
-                                                        total_face_height=total_face_height,
-                                                        margin=2.5,
-                                                        target_triangulation_indexes=target_triangulation_indexes,
-                                                        target_all_landmarks=target_all_landmarks)
-
-                        if new_morph is not None:
-                            print("      Morphed the face")
-                            # Alpha blend the image with the previous image.
-                            alpha = config["alpha"]
-
-                            if len(known_face_encodings) == 0:
-                                alpha = 0.999
-                            elif len(known_face_encodings) < 3:
-                                alpha = 0.5
-                            elif len(known_face_encodings) < 5:
-                                alpha = 0.3
-                            else:
-                                alpha = config["alpha"]
-
-                            beta = 1.0 - alpha  # Weight for image2
-
-                            # Perform alpha blending
-                            blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
-
-                            # Set the current face to the blended face.
-                            CURRENT_AVERAGE = blended_image
-
-                            # Add the new face encoding to the list of known faces
-                            known_face_encodings.append(face_encoding)
-                        else:
-                            print("      Did not morph/blend the face")
-                    except:
-                        print("ERROR morphing face")
+                # If no match, it means this is a new face
+                if any(matches):
+                    print("  Face seen before!")
                 
                 else:
-                    print("    Face NOT looking forward")
+                    print(f"  Analyzing Face {i}")
+                    # This image will be used for averaging
+                    image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
+
+                    # Process the image.
+                    image.flags.writeable = False
+                    results = face_mesh.process(image)
+                    image.flags.writeable = True
+
+                    # TODO: check if this is redundant
+                    image = cv2.cvtColor(image,cv2.COLOR_RGB2BGR)
+
+                    # Get image size information.
+                    img_h , img_w, img_c = image.shape
+
+                    # Collect the 2D and 3D landmarks.
+                    face_2d = []
+                    face_3d = []
+
+                    # If there are landmarks (face detected), continue
+                    if results.multi_face_landmarks:
+                        print("    Landmarks detected")
+                        for face_landmarks in results.multi_face_landmarks:
+                            for idx, lm in enumerate(face_landmarks.landmark):
+                                if idx == 33 or idx == 263 or idx ==1 or idx == 61 or idx == 291 or idx==199:
+                                    if idx ==1:
+                                        nose_2d = (lm.x * img_w,lm.y * img_h)
+                                        nose_3d = (lm.x * img_w,lm.y * img_h,lm.z * 3000)
+                                    x,y = int(lm.x * img_w),int(lm.y * img_h)
+
+                                    face_2d.append([x,y])
+                                    face_3d.append(([x,y,lm.z]))
+
+
+                            # Get 2D coordinates
+                            face_2d = np.array(face_2d, dtype=np.float64)
+
+                            # Get 3D coordinates
+                            face_3d = np.array(face_3d,dtype=np.float64)
+
+                            # Calculate the orientation of the face.
+                            focal_length = 1 * img_w
+                            cam_matrix = np.array([[focal_length,0,img_h/2],
+                                                [0,focal_length,img_w/2],
+                                                [0,0,1]])
+                            distortion_matrix = np.zeros((4,1),dtype=np.float64)
+
+                            success,rotation_vec,translation_vec = cv2.solvePnP(face_3d, face_2d, cam_matrix, distortion_matrix)
+
+                            # Get the rotational vector of the face.
+                            rmat, jac = cv2.Rodrigues(rotation_vec)
+
+                            angles, mtxR, mtxQ ,Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
+
+                            x = angles[0] * 360
+                            y = angles[1] * 360
+                            z = angles[2] * 360
+
+                            # Check which way the face is oriented.
+                            if y < -3: # Looking Left
+                                looking_forward=False
+                            elif y > 3: # Looking Right
+                                looking_forward=False
+                            elif x < -3: # Looking Down
+                                looking_forward=False
+                            elif x > 7: # Looking Up
+                                looking_forward=False
+                            else: # Looking Forward
+                                looking_forward=True
+
+                    else:
+                        print("    No landmarks detected")
+                
+                    # If the face is looking forward (passport style), continue.
+                    if looking_forward:
+                        print("    Face is looking forward!")
+                        try:
+                            # Generate the morph.
+                            new_morph = processing_pipeline(image=image,
+                                                            total_face_width=total_face_width,
+                                                            total_face_height=total_face_height,
+                                                            margin=2.5,
+                                                            target_triangulation_indexes=target_triangulation_indexes,
+                                                            target_all_landmarks=target_all_landmarks)
+
+                            if new_morph is not None:
+                                print("      Morphed the face")
+                                # Alpha blend the image with the previous image.
+                                alpha = config["alpha"]
+
+                                if len(known_face_encodings) == 0:
+                                    alpha = 0.999
+                                elif len(known_face_encodings) < 3:
+                                    alpha = 0.5
+                                elif len(known_face_encodings) < 5:
+                                    alpha = 0.3
+                                else:
+                                    alpha = config["alpha"]
+
+                                beta = 1.0 - alpha  # Weight for image2
+
+                                # Perform alpha blending
+                                blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
+
+                                # Set the current face to the blended face.
+                                CURRENT_AVERAGE = blended_image
+
+                                # Add the new face encoding to the list of known faces
+                                known_face_encodings.append(face_encoding)
+                            else:
+                                print("      Did not morph/blend the face")
+                        except:
+                            print("ERROR morphing face")
+                    
+                    else:
+                        print("    Face NOT looking forward")
+
+        else:
+            print("No faces detected")
 
         print("---------------")
 
