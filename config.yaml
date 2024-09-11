@@ -1,5 +1,5 @@
 # The fraction of the new image that will enter the collage.
-alpha: 0.5
+alpha: 0.2
 
 # These should be roughly square for good behavior.
 display_width: 1024
