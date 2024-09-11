@@ -167,6 +167,8 @@ if __name__ == "__main__":
     # The current average face, which will be displayed on the screen.
     CURRENT_AVERAGE = morphed_face
 
+    # Track the number of faces previously
+
     # Start video capture.
     from picamera2 import Picamera2
     picam2 = Picamera2()
@@ -292,7 +294,18 @@ if __name__ == "__main__":
                         if new_morph is not None:
                             print("Morphed the face")
                             # Alpha blend the image with the previous image.
-                            beta = 1.0 - config["alpha"]  # Weight for image2
+                            alpha = config["alpha"]
+
+                            if len(known_face_encodings) == 0:
+                                alpha = 0.999
+                            elif len(known_face_encodings) < 3:
+                                alpha = 0.5
+                            elif len(known_face_encodings) < 5:
+                                alpha = 0.3
+                            else:
+                                alpha = config["alpha"]
+
+                            beta = 1.0 - alpha  # Weight for image2
 
                             # Perform alpha blending
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
