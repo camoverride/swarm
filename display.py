@@ -173,6 +173,9 @@ if __name__ == "__main__":
     picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888", "size": (640, 480)}))
     picam2.start()
 
+    # Make the display fullscreen
+    cv2.namedWindow("Running Average", cv2.WND_PROP_FULLSCREEN)
+
     while True:
         # Set this to False. If a face is looking forward, it will be set to True later.
         looking_forward = False
