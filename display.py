@@ -206,7 +206,7 @@ if __name__ == "__main__":
             
             else:
                 # This image will be used for averaging
-                # image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
+                image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
 
                 # Process the image.
                 image.flags.writeable = False
