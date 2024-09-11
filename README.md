@@ -41,7 +41,7 @@ Hide the cursor:
 Create a service with *systemd*:
 
 - `mkdir -p ~/.config/systemd/user`
-- `cat display.service ~/.config/systemd/user/display.service`
+- `cat display.service > ~/.config/systemd/user/display.service`
 
 Start the service using the commands below:
 
