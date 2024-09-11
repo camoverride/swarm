@@ -202,7 +202,7 @@ if __name__ == "__main__":
             for i, face_encoding in enumerate(face_encodings):
                 print(f"{len(face_encodings)} faces detected!")
                 # Check if this face has already been seen
-                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=config["tolerance"])
 
                 # If no match, it means this is a new face
                 if any(matches):
