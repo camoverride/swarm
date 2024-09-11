@@ -198,15 +198,17 @@ if __name__ == "__main__":
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
         # Iterate over the encodings.
-        for face_encoding in face_encodings:
+        for i, face_encoding in enumerate(face_encodings):
+            print(f"{i} faces detected!")
             # Check if this face has already been seen
             matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
 
             # If no match, it means this is a new face
             if any(matches):
-                print("Face seen before!")
+                print("  Face seen before!")
             
             else:
+                print(f"  Analyzing Face {i}")
                 # This image will be used for averaging
                 image = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
 
@@ -227,7 +229,7 @@ if __name__ == "__main__":
 
                 # If there are landmarks (face detected), continue
                 if results.multi_face_landmarks:
-                    print("Landmarks detected")
+                    print("    Landmarks detected")
                     for face_landmarks in results.multi_face_landmarks:
                         for idx, lm in enumerate(face_landmarks.landmark):
                             if idx == 33 or idx == 263 or idx ==1 or idx == 61 or idx == 291 or idx==199:
@@ -277,11 +279,11 @@ if __name__ == "__main__":
                             looking_forward=True
 
                 else:
-                    print("No landmarks detected")
+                    print("    No landmarks detected")
             
                 # If the face is looking forward (passport style), continue.
                 if looking_forward:
-                    print("face is looking forward!")
+                    print("    Face is looking forward!")
                     try:
                         # Generate the morph.
                         new_morph = processing_pipeline(image=image,
@@ -292,7 +294,7 @@ if __name__ == "__main__":
                                                         target_all_landmarks=target_all_landmarks)
 
                         if new_morph is not None:
-                            print("Morphed the face")
+                            print("      Morphed the face")
                             # Alpha blend the image with the previous image.
                             alpha = config["alpha"]
 
@@ -316,12 +318,12 @@ if __name__ == "__main__":
                             # Add the new face encoding to the list of known faces
                             known_face_encodings.append(face_encoding)
                         else:
-                            print("Did not morph/blend the face")
+                            print("      Did not morph/blend the face")
                     except:
                         print("ERROR morphing face")
                 
                 else:
-                    print("Face NOT looking forward")
+                    print("    Face NOT looking forward")
 
         print("---------------")
 
