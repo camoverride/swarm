@@ -169,7 +169,7 @@ if __name__ == "__main__":
     #                                    target_all_landmarks=target_all_landmarks)
 
     # The current average face, which will be displayed on the screen.
-    CURRENT_AVERAGE = None
+    CURRENT_AVERAGE = []
 
     # Track the number of faces previously
 
@@ -318,7 +318,7 @@ if __name__ == "__main__":
                                 alpha = config["alpha"]
 
 
-                            if CURRENT_AVERAGE == None: # only first loop
+                            if CURRENT_AVERAGE == []: # only first loop
                                 CURRENT_AVERAGE = new_morph
 
 
