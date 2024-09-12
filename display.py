@@ -317,10 +317,12 @@ if __name__ == "__main__":
                             else:
                                 alpha = config["alpha"]
 
-                            beta = 1.0 - alpha  # Weight for image2
 
                             if CURRENT_AVERAGE == None: # only first loop
                                 CURRENT_AVERAGE = new_morph
+
+
+                            beta = 1.0 - config["alpha"]  # Weight for image2
 
                             # Perform alpha blending
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
