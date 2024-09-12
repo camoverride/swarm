@@ -305,6 +305,7 @@ if __name__ == "__main__":
 
                         if new_morph is not None:
                             print("      Morphed the face")
+                            cv2.imshow("morph", new_morph)
                             # Alpha blend the image with the previous image.
                             alpha = config["alpha"]
 
@@ -323,7 +324,7 @@ if __name__ == "__main__":
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
 
                             # Brighten the image
-                            blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=10)
+                            blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=50)
 
                             # Set the current face to the blended face.
                             CURRENT_AVERAGE = blended_image
@@ -344,7 +345,7 @@ if __name__ == "__main__":
 
         print("---------------")
 
-        cv2.imshow("Running Average", CURRENT_AVERAGE)
+        # cv2.imshow("Running Average", CURRENT_AVERAGE)
         # Exit if 'q' is pressed.
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
