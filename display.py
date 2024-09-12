@@ -328,8 +328,9 @@ if __name__ == "__main__":
                                 known_face_encodings.append(face_encoding)
                             else:
                                 print("      Did not morph/blend the face")
-                        except:
+                        except Exception as e:
                             print("ERROR morphing face")
+                            print(e)
                     
                     else:
                         print("    Face NOT looking forward")
