@@ -326,7 +326,7 @@ if __name__ == "__main__":
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
 
 
-                            cv2.imshow("blend", blended_image)
+                            cv2.imshow("blend", new_morph)
 
                             # Brighten the image
                             blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=50)
