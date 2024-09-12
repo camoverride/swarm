@@ -309,7 +309,9 @@ if __name__ == "__main__":
                             alpha = config["alpha"]
 
                             if len(known_face_encodings) == 0:
-                                alpha = 0.7
+                                alpha = 0.95
+                            elif len(known_face_encodings) < 2:
+                                alpha = 0.85
                             elif len(known_face_encodings) < 3:
                                 alpha = 0.5
                             elif len(known_face_encodings) < 5:
