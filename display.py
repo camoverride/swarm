@@ -104,7 +104,7 @@ def processing_pipeline(image,
             bounding_box = detection.location_data.relative_bounding_box
 
             # Crop the face with the desired margin
-            cropped_face = crop_face_with_margin(image_rgb, bounding_box, margin)
+            cropped_face = crop_face_with_margin(image, bounding_box, margin)
 
 
 
