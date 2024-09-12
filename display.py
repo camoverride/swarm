@@ -200,6 +200,7 @@ if __name__ == "__main__":
         # Convert the image from BGR (OpenCV format) to RGB (face_recognition format)
         rgb_small_frame = np.ascontiguousarray(frame[:, :, ::-1])
 
+
         # Detect faces and get encodings for the current frame
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
@@ -320,6 +321,9 @@ if __name__ == "__main__":
 
                             # Perform alpha blending
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
+
+                            # Brighten the image
+                            blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=100)
 
                             # Set the current face to the blended face.
                             CURRENT_AVERAGE = blended_image
