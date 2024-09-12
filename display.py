@@ -98,7 +98,7 @@ def processing_pipeline(image,
         results = mp_face_detection.process(image)
 
         # Second, check if there is actually a face (which there should be, give that there is a mesh). However, we also need the bounding box for cropping.
-        if results.detections:
+        if 1==1:#results.detections:
             print("----results.detection")
             detection = results.detections[0]
             bounding_box = detection.location_data.relative_bounding_box
