@@ -176,10 +176,10 @@ if __name__ == "__main__":
     # Start video capture.
     from picamera2 import Picamera2
     picam2 = Picamera2()
-    picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888", "size": (640, 480)}))
-    # picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888",
-    #                                                            "size": (config["display_width"] * 2, 
-    #                                                                     config["display_height"] * 2)}))
+    # picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888", "size": (640, 480)}))
+    picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888",
+                                                               "size": (config["display_width"] * 2, 
+                                                                        config["display_height"] * 2)}))
     picam2.start()
 
     # Make the display fullscreen
