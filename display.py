@@ -309,7 +309,7 @@ if __name__ == "__main__":
                             alpha = config["alpha"]
 
                             if len(known_face_encodings) == 0:
-                                alpha = 0.999
+                                alpha = 0.7
                             elif len(known_face_encodings) < 3:
                                 alpha = 0.5
                             elif len(known_face_encodings) < 5:
@@ -323,7 +323,7 @@ if __name__ == "__main__":
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
 
                             # Brighten the image
-                            blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=100)
+                            blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=10)
 
                             # Set the current face to the blended face.
                             CURRENT_AVERAGE = blended_image
