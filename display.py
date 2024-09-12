@@ -172,7 +172,9 @@ if __name__ == "__main__":
     # Start video capture.
     from picamera2 import Picamera2
     picam2 = Picamera2()
-    picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888", "size": (640, 480)}))
+    picam2.configure(picam2.create_preview_configuration(main={"format": "RGB888",
+                                                               "size": (config["display_width"] * 2, 
+                                                                        config["display_height"] * 2)}))
     picam2.start()
 
     # Make the display fullscreen
@@ -268,11 +270,12 @@ if __name__ == "__main__":
                             z = angles[2] * 360
 
                             # Check which way the face is oriented.
-                            if y < -3: # Looking Left
+                            # Previously -3 3 -3 7
+                            if y < -5: # Looking Left
                                 looking_forward=False
-                            elif y > 3: # Looking Right
+                            elif y > 5: # Looking Right
                                 looking_forward=False
-                            elif x < -3: # Looking Down
+                            elif x < -5: # Looking Down
                                 looking_forward=False
                             elif x > 7: # Looking Up
                                 looking_forward=False

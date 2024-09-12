@@ -65,5 +65,5 @@ Get the logs:
 ## TODO
 
 - [X] integrate picam
-- [ ] implement dynamic alpha (should be high, like 0.8, then drop quickly to 0.1 over ~10 iterations)
+- [X] implement dynamic alpha (should be high, like 0.8, then drop quickly to 0.1 over ~10 iterations)
 - [ ] play with `face_memory` parameter
