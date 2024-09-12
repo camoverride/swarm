@@ -293,44 +293,44 @@ if __name__ == "__main__":
                     # If the face is looking forward (passport style), continue.
                     if looking_forward:
                         print("    Face is looking forward!")
-                        try:
+                        # try:
                             # Generate the morph.
-                            new_morph = processing_pipeline(image=image,
-                                                            total_face_width=total_face_width,
-                                                            total_face_height=total_face_height,
-                                                            margin=2.5,
-                                                            target_triangulation_indexes=target_triangulation_indexes,
-                                                            target_all_landmarks=target_all_landmarks)
+                        new_morph = processing_pipeline(image=image,
+                                                        total_face_width=total_face_width,
+                                                        total_face_height=total_face_height,
+                                                        margin=2.5,
+                                                        target_triangulation_indexes=target_triangulation_indexes,
+                                                        target_all_landmarks=target_all_landmarks)
 
-                            if new_morph is not None:
-                                print("      Morphed the face")
-                                # Alpha blend the image with the previous image.
+                        if new_morph is not None:
+                            print("      Morphed the face")
+                            # Alpha blend the image with the previous image.
+                            alpha = config["alpha"]
+
+                            if len(known_face_encodings) == 0:
+                                alpha = 0.999
+                            elif len(known_face_encodings) < 3:
+                                alpha = 0.5
+                            elif len(known_face_encodings) < 5:
+                                alpha = 0.3
+                            else:
                                 alpha = config["alpha"]
 
-                                if len(known_face_encodings) == 0:
-                                    alpha = 0.999
-                                elif len(known_face_encodings) < 3:
-                                    alpha = 0.5
-                                elif len(known_face_encodings) < 5:
-                                    alpha = 0.3
-                                else:
-                                    alpha = config["alpha"]
+                            beta = 1.0 - alpha  # Weight for image2
 
-                                beta = 1.0 - alpha  # Weight for image2
+                            # Perform alpha blending
+                            blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
 
-                                # Perform alpha blending
-                                blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
+                            # Set the current face to the blended face.
+                            CURRENT_AVERAGE = blended_image
 
-                                # Set the current face to the blended face.
-                                CURRENT_AVERAGE = blended_image
-
-                                # Add the new face encoding to the list of known faces
-                                known_face_encodings.append(face_encoding)
-                            else:
-                                print("      Did not morph/blend the face")
-                        except Exception as e:
-                            print("ERROR morphing face")
-                            print(e)
+                            # Add the new face encoding to the list of known faces
+                            known_face_encodings.append(face_encoding)
+                        else:
+                            print("      Did not morph/blend the face")
+                        # except Exception as e:
+                        #     print("ERROR morphing face")
+                        #     print(e)
                     
                     else:
                         print("    Face NOT looking forward")
