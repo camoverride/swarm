@@ -95,7 +95,7 @@ def processing_pipeline(image,
 
     if results_mesh.multi_face_landmarks:
         print("----results_mesh.multi_face_landmarks")
-        results = mp_face_detection.process(image)
+        results = mp_face_detection.process(image_rgb)
 
         # Second, check if there is actually a face (which there should be, give that there is a mesh). However, we also need the bounding box for cropping.
         if 1==1:#results.detections:
@@ -104,7 +104,7 @@ def processing_pipeline(image,
             bounding_box = detection.location_data.relative_bounding_box
 
             # Crop the face with the desired margin
-            cropped_face = crop_face_with_margin(image, bounding_box, margin)
+            cropped_face = crop_face_with_margin(image_rgb, bounding_box, margin)
 
 
 
