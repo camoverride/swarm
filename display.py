@@ -94,10 +94,12 @@ def processing_pipeline(image,
     results_mesh = face_mesh.process(image_rgb)
 
     if results_mesh.multi_face_landmarks:
+        print("----results_mesh.multi_face_landmarks")
         results = mp_face_detection.process(image)
 
         # Second, check if there is actually a face (which there should be, give that there is a mesh). However, we also need the bounding box for cropping.
         if results.detections:
+            print("----results.detection")
             detection = results.detections[0]
             bounding_box = detection.location_data.relative_bounding_box
 
@@ -113,10 +115,12 @@ def processing_pipeline(image,
 
 
             # Get the face landmarks and additional landmarks
+            # Problem! Getting landmarks on cropped image will often fail!
             source_face_landmarks = get_face_landmarks(resized_face)
 
             # Only append the face if it exists!
             if source_face_landmarks:
+                print("----landmarks")
                 source_additional_landmarks = get_additional_landmarks(resized_face)
                 source_all_landmarks = source_face_landmarks + source_additional_landmarks
 
