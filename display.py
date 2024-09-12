@@ -160,16 +160,16 @@ if __name__ == "__main__":
                                             margin=2.5,
                                             debug=False)
 
-    # Morph a single face for the starting image.
-    morphed_face = processing_pipeline(image=cv2.imread("cam.jpg"),
-                                       total_face_width=total_face_width,
-                                       total_face_height=total_face_height,
-                                       margin=2.5,
-                                       target_triangulation_indexes=target_triangulation_indexes,
-                                       target_all_landmarks=target_all_landmarks)
+    # # Morph a single face for the starting image.
+    # morphed_face = processing_pipeline(image=cv2.imread("cam.jpg"),
+    #                                    total_face_width=total_face_width,
+    #                                    total_face_height=total_face_height,
+    #                                    margin=2.5,
+    #                                    target_triangulation_indexes=target_triangulation_indexes,
+    #                                    target_all_landmarks=target_all_landmarks)
 
     # The current average face, which will be displayed on the screen.
-    CURRENT_AVERAGE = morphed_face
+    CURRENT_AVERAGE = None
 
     # Track the number of faces previously
 
@@ -305,7 +305,6 @@ if __name__ == "__main__":
 
                         if new_morph is not None:
                             print("      Morphed the face")
-                            cv2.imshow("morph", new_morph)
                             # Alpha blend the image with the previous image.
                             alpha = config["alpha"]
 
@@ -320,8 +319,14 @@ if __name__ == "__main__":
 
                             beta = 1.0 - alpha  # Weight for image2
 
+                            if CURRENT_AVERAGE == None: # only first loop
+                                CURRENT_AVERAGE = new_morph
+
                             # Perform alpha blending
                             blended_image = cv2.addWeighted(new_morph, config["alpha"], CURRENT_AVERAGE, beta, 0)
+
+
+                            cv2.imshow("blend", blended_image)
 
                             # Brighten the image
                             blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=50)
