@@ -332,7 +332,7 @@ if __name__ == "__main__":
 
 
                             # Brighten the image
-                            blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=50)
+                            # blended_image = cv2.convertScaleAbs(blended_image, alpha=1, beta=50)
 
                             cv2.imshow("Running Average", blended_image)
 
